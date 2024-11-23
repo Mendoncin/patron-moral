@@ -1,0 +1,19 @@
+import requests
+from bs4 import BeautifulSoup
+
+nome_usuario = input()
+url = f'https://letterboxd.com/{nome_usuario}/'
+cabecalhos = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, como Gecko) Chrome/91.0.4472.124 Safari/537.36'
+} #malandragem
+resposta = requests.get(url, headers=cabecalhos)
+if resposta.status_code == 200:
+    soup = BeautifulSoup(resposta.text, 'html.parser')   #parsing
+    tag_nome_exibicao = soup.find('h1', class_='person-display-name').find('span', class_='displayname')
+    nome_bonito = tag_nome_exibicao.text.strip() 
+    tag_filmes = soup.find('a', href=f'/{nome_usuario}/films/').find('span', class_='value')
+    qnt_filmes = int(tag_filmes.text)
+    print(qnt_filmes) 
+    print(nome_bonito)
+else:
+    print("erro pagina principal")
