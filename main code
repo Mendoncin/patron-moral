@@ -21,14 +21,20 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
         if ',' in diretor:
             diretores = diretor.split(', ')
             for diretor in diretores:
-                print(diretor)
+                contador3 = 0
                 for teste in lista_diretor:
                     lista_teste = teste.split(' : ')
                     if lista_teste[0] == diretor:
-                        lista_teste[1] += nota 
-                        lista_teste[2] +=1
+                        nota_diretor = int(lista_teste[1]) + nota 
+                        qnt_filme_diretor = int(lista_teste[2]) + 1
+                        index = contador3
+                        media_diretor = nota_diretor / qnt_filme_diretor
+                        media_diretor = round(media_diretor, 2)
+
                     else:
-                        lista_diretor.append(f'{diretor} : {nota} : 1')
+                        contador3 +=1
+                        if contador3 == len(lista_diretor):
+                            liberado = True
 
         else:
             for teste in lista_diretor:
@@ -36,16 +42,17 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
                 if lista_teste[0] == diretor:
                     nota_diretor = int(lista_teste[1]) + nota 
                     qnt_filme_diretor = int(lista_teste[2]) + 1
-                    teste = [lista_teste[0], lista_teste[1], lista_teste[2]]
                     index = contador3
+                    media_diretor = nota_diretor / qnt_filme_diretor
+                    media_diretor = round(media_diretor, 2)
                 else:
                     contador3 +=1
                     if contador3 == len(lista_diretor):
                         liberado = True
         if liberado == True:
-            lista_diretor.append(f'{diretor} : {nota} : 1')
+            lista_diretor.append(f'{diretor} : {nota} : 1 : {nota}')
         else:
-            lista_diretor[index] = f'{diretor} : {nota_diretor} : {qnt_filme_diretor}'
+            lista_diretor[index] = f'{diretor} : {nota_diretor} : {qnt_filme_diretor} : {media_diretor}'
         print(lista_diretor)
         print(ano_filme)
         print(nome_filme)
@@ -54,7 +61,7 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
 
 nome_usuario = input()
 
-lista_diretor = ['a : b : c']
+lista_diretor = ['a : b : c : d']
 contador1 = 0
 contador2 = 0
 url = f'https://letterboxd.com/{nome_usuario}/'
