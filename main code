@@ -18,6 +18,8 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
         ano_filme = tag_ano.text.strip()
         tag_diretor = soup.find('span', class_='directorlist')
         diretor = tag_diretor.text.strip()
+        if diretor.endswith('\n…'):
+            diretor = diretor.replace('\n…', '')
         while ',' in diretor:
             diretores = diretor.split(', ')
             for diretor1 in diretores:
@@ -25,56 +27,84 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
                 for teste in lista_diretor:
                     lista_teste = teste.split(' : ')
                     if lista_teste[0] == diretor1:
+                        qnt_filme_diretor1 = int(lista_teste[2])
+                        if nota != 'filme sem nota':
+                            qnt_filme_diretor1 +=1
+                        else:
+                            nota = 0
                         nota_diretor = int(lista_teste[1]) + nota 
-                        qnt_filme_diretor = int(lista_teste[2]) + 1
+                        qnt_filme_diretor = int(lista_teste[4]) + 1
                         index = contador3
-                        media_diretor = nota_diretor / qnt_filme_diretor
-                        media_diretor = round(media_diretor, 2)
+                        if qnt_filme_diretor1 == 0:
+                            media_diretor = 0
+                        else:
+                            media_diretor = nota_diretor / qnt_filme_diretor1
+                            media_diretor = round(media_diretor, 2)
 
                     else:
                         contador3 +=1
                         if contador3 == len(lista_diretor):
                             liberado = True
 
-        
             for teste in lista_diretor:
                 lista_teste = teste.split(' : ')
                 if lista_teste[0] == diretor:
-                    nota_diretor = int(lista_teste[1]) + nota 
-                    qnt_filme_diretor = int(lista_teste[2]) + 1
+                    qnt_filme_diretor1 = int(lista_teste[2])
+                    if nota != 'filme sem nota':
+                        qnt_filme_diretor1 +=1
+                    else:
+                        nota = 0
+                    nota_diretor = int(lista_teste[1]) + nota
+                    qnt_filme_diretor = int(lista_teste[4]) + 1
                     index = contador3
-                    media_diretor = nota_diretor / qnt_filme_diretor
-                    media_diretor = round(media_diretor, 2)
+                    if qnt_filme_diretor1 == 0:
+                        media_diretor = 0
+                    else:
+                        media_diretor = nota_diretor / qnt_filme_diretor1
+                        media_diretor = round(media_diretor, 2)
                 else:
                     contador3 +=1
                     if contador3 == len(lista_diretor):
                         liberado = True
             if liberado == True:
-                lista_diretor.append(f'{diretor1} : {nota} : 1 : {nota}')
+                if nota == 'filme sem nota':
+                    lista_diretor.append(f'{diretor} : 0 : 0 : 0 : 1')
+                else:
+                    lista_diretor.append(f'{diretor1} : {nota} : 1 : {nota} : 1')
                 diretores.pop()
                 diretor = ', '.join(diretores)
             else:
-                lista_diretor[index] = f'{diretor} : {nota_diretor} : {qnt_filme_diretor} : {media_diretor}'
+                lista_diretor[index] = f'{diretor} : {nota_diretor} : {qnt_filme_diretor1} : {media_diretor} : {qnt_filme_diretor}'
                 diretores.pop()
                 diretor = ', '.join(diretores)
-
 
         for teste in lista_diretor:
                 lista_teste = teste.split(' : ')
                 if lista_teste[0] == diretor:
-                    nota_diretor = int(lista_teste[1]) + nota 
-                    qnt_filme_diretor = int(lista_teste[2]) + 1
+                    qnt_filme_diretor1 = int(lista_teste[2])
+                    if nota != 'filme sem nota':
+                        qnt_filme_diretor1 +=1
+                    else:
+                        nota = 0
+                    nota_diretor = int(lista_teste[1]) + nota
+                    qnt_filme_diretor = int(lista_teste[4]) + 1
                     index = contador3
-                    media_diretor = nota_diretor / qnt_filme_diretor
-                    media_diretor = round(media_diretor, 2)
+                    if qnt_filme_diretor1 == 0:
+                        media_diretor = 0
+                    else:
+                        media_diretor = nota_diretor / qnt_filme_diretor1
+                        media_diretor = round(media_diretor, 2)
                 else:
                     contador3 +=1
                     if contador3 == len(lista_diretor):
                         liberado = True
         if liberado == True:
-                lista_diretor.append(f'{diretor} : {nota} : 1 : {nota}')
+                if nota == 'filme sem nota':
+                    lista_diretor.append(f'{diretor} : 0 : 0 : 0 : 1')
+                else:
+                    lista_diretor.append(f'{diretor} : {nota} : 1 : {nota} : 1')
         else:
-                lista_diretor[index] = f'{diretor} : {nota_diretor} : {qnt_filme_diretor} : {media_diretor}'
+                lista_diretor[index] = f'{diretor} : {nota_diretor} : {qnt_filme_diretor1} : {media_diretor} : {qnt_filme_diretor}'
         print(lista_diretor)
         print(ano_filme)
         print(nome_filme)
@@ -83,7 +113,7 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
 
 nome_usuario = input()
 
-lista_diretor = ['a : b : c : d']
+lista_diretor = ['a : b : c : d : e']
 contador1 = 0
 contador2 = 0
 url = f'https://letterboxd.com/{nome_usuario}/'
@@ -137,7 +167,11 @@ for pagina in range(1, qnt_pag+1):
 
 
 filmes_cm_nota = qnt_filmes - contador1
-media_nota = contador2 /filmes_cm_nota
+if filmes_cm_nota == 0:
+    print(f'{nome_bonito} é paia por não dar nota')
+else:
 
-print(f'média de notas de {nome_bonito}: {media_nota}')
+    media_nota = contador2 /filmes_cm_nota
+    print(f'média de notas de {nome_bonito}: {media_nota}')
+
 print(filmes_cm_nota)
