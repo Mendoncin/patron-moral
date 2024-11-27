@@ -111,6 +111,7 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
 
 nome_usuario = input()
 
+lista_anota = []
 lista_diretor = ['a : b : c : d : e']
 contador1 = 0
 contador2 = 0
@@ -152,6 +153,7 @@ for pagina in range(1, qnt_pag+1):
                         nota = 10
                     contador2 += nota
                     informações, ano, nome = pagina_filmes_individual(slug, lista_diretor, nota)
+                    lista_anota.append(f'{ano[:3]}0s, {nota}')
                 elif dado.startswith('</p') and notas == False:
                     nota = 'filme sem nota'
                     informações, ano, nome = pagina_filmes_individual(slug, lista_diretor, nota)
@@ -192,3 +194,22 @@ for i in range(tamanho_informações):
             informações_ord_filmes[j], informações_ord_filmes[j+1] = informações_ord_filmes[j+1], informações_ord_filmes[j]
 
 print(informações_ord_filmes)
+
+somas_decadas = []
+
+for i in lista_anota:
+    decada, parcela = i.split(', ')
+    parcela = int(parcela)
+    liberado = False
+    for j in somas_decadas:
+        if j[0] == decada:
+            j[1] += parcela
+            j[2] +=1
+            liberado = True
+            break
+    if liberado == False:
+        somas_decadas.append([decada, parcela, 1])
+
+for decada, soma, contador in somas_decadas:
+    media = soma / contador
+    print(f"{decada}: media = {media:.2f}")
