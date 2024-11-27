@@ -105,9 +105,7 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
                     lista_diretor.append(f'{diretor} : {nota} : 1 : {nota} : 1')
         else:
                 lista_diretor[index] = f'{diretor} : {nota_diretor} : {qnt_filme_diretor1} : {media_diretor} : {qnt_filme_diretor}'
-        print(lista_diretor)
-        print(ano_filme)
-        print(nome_filme)
+        return(lista_diretor, ano_filme, nome_filme)
 
 
 
@@ -153,12 +151,10 @@ for pagina in range(1, qnt_pag+1):
                     if nota == 0:
                         nota = 10
                     contador2 += nota
-                    print(nota)
-                    pagina_filmes_individual(slug, lista_diretor, nota)
+                    informações, ano, nome = pagina_filmes_individual(slug, lista_diretor, nota)
                 elif dado.startswith('</p') and notas == False:
                     nota = 'filme sem nota'
-                    print(nota)
-                    pagina_filmes_individual(slug, lista_diretor, nota)
+                    informações, ano, nome = pagina_filmes_individual(slug, lista_diretor, nota)
                     contador1 += 1
                 elif dado.startswith('data-film-slug='):
                     lixo = dado.split('=')
@@ -175,3 +171,24 @@ else:
     print(f'média de notas de {nome_bonito}: {media_nota}')
 
 print(filmes_cm_nota)
+informações.pop(0)
+informações_ord_filmes = informações
+informações_ord_media = informações
+tamanho_informações = len(informações)
+for i in range(tamanho_informações):
+    for j in range(0, tamanho_informações - i - 1):
+        media1 = float(informações_ord_media[j].split(' : ')[3])
+        media2 = float(informações_ord_media[j+1].split(' : ')[3])
+        if media1 < media2:
+            informações_ord_media[j], informações_ord_media[j+1] = informações_ord_media[j+1], informações_ord_media[j]
+
+print(informações_ord_media)
+
+for i in range(tamanho_informações):
+    for j in range(0, tamanho_informações - i - 1):
+        filmes1 = float(informações_ord_filmes[j].split(' : ')[4])
+        filmes2 = float(informações_ord_filmes[j+1].split(' : ')[4])
+        if filmes1 < filmes2:
+            informações_ord_filmes[j], informações_ord_filmes[j+1] = informações_ord_filmes[j+1], informações_ord_filmes[j]
+
+print(informações_ord_filmes)
