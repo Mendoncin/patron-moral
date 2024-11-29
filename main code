@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import math
+from tkinter import *
 
 def pagina_filmes_individual (slug, lista_diretor, nota):
     liberado = False
@@ -108,108 +109,130 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
         return(lista_diretor, ano_filme, nome_filme)
 
 
+def main(nome_usuario):
 
-nome_usuario = input()
-
-lista_anota = []
-lista_diretor = ['a : b : c : d : e']
-contador1 = 0
-contador2 = 0
-url = f'https://letterboxd.com/{nome_usuario}/'
-cabecalhos = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, como Gecko) Chrome/91.0.4472.124 Safari/537.36'
-}
-resposta = requests.get(url, headers=cabecalhos)
-if resposta.status_code == 200:
-    soup = BeautifulSoup(resposta.text, 'html.parser') 
-    tag_nome_exibicao = soup.find('h1', class_='person-display-name').find('span', class_='displayname')
-    nome_bonito = tag_nome_exibicao.text.strip() 
-    tag_filmes = soup.find('a', href=f'/{nome_usuario}/films/').find('span', class_='value')
-    qnt_filmes = int(tag_filmes.text)
-else:
-    print('a')
-
-qnt_pag = math.ceil(qnt_filmes/72)
-for pagina in range(1, qnt_pag+1):
-    url = f'https://letterboxd.com/{nome_usuario}/films/'
-    if pagina > 1:
-        url = f'{url}page/{pagina}/'
+    lista_anota = []
+    lista_diretor = ['a : b : c : d : e']
+    contador1 = 0
+    contador2 = 0
+    url = f'https://letterboxd.com/{nome_usuario}/'
     cabecalhos = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, como Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
     resposta = requests.get(url, headers=cabecalhos)
     if resposta.status_code == 200:
-        soup = BeautifulSoup(resposta.text, 'html.parser')
-        filmes = soup.find_all('li', class_='poster-container')
-        for filme in filmes:
-            notas = False
-            dados = str(filme).split()
-            for dado in dados:
-                if dado.startswith('rated-'):
-                    lixo=dado.split('"')
-                    nota = int(lixo[0][-1])
-                    notas = True
-                    if nota == 0:
-                        nota = 10
-                    contador2 += nota
-                    informações, ano, nome = pagina_filmes_individual(slug, lista_diretor, nota)
-                    lista_anota.append(f'{ano[:3]}0s, {nota}')
-                elif dado.startswith('</p') and notas == False:
-                    nota = 'filme sem nota'
-                    informações, ano, nome = pagina_filmes_individual(slug, lista_diretor, nota)
-                    contador1 += 1
-                elif dado.startswith('data-film-slug='):
-                    lixo = dado.split('=')
-                    slug = lixo[1]
-                    slug = slug[1:-1]
+        soup = BeautifulSoup(resposta.text, 'html.parser') 
+        tag_nome_exibicao = soup.find('h1', class_='person-display-name').find('span', class_='displayname')
+        nome_bonito = tag_nome_exibicao.text.strip() 
+        tag_filmes = soup.find('a', href=f'/{nome_usuario}/films/').find('span', class_='value')
+        qnt_filmes = int(tag_filmes.text)
+    else:
+        print('a')
+
+    qnt_pag = math.ceil(qnt_filmes/72)
+    for pagina in range(1, qnt_pag+1):
+        url = f'https://letterboxd.com/{nome_usuario}/films/'
+        if pagina > 1:
+            url = f'{url}page/{pagina}/'
+        cabecalhos = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, como Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        resposta = requests.get(url, headers=cabecalhos)
+        if resposta.status_code == 200:
+            soup = BeautifulSoup(resposta.text, 'html.parser')
+            filmes = soup.find_all('li', class_='poster-container')
+            for filme in filmes:
+                notas = False
+                dados = str(filme).split()
+                for dado in dados:
+                    if dado.startswith('rated-'):
+                        lixo=dado.split('"')
+                        nota = int(lixo[0][-1])
+                        notas = True
+                        if nota == 0:
+                            nota = 10
+                        contador2 += nota
+                        informações, ano, nome = pagina_filmes_individual(slug, lista_diretor, nota)
+                        lista_anota.append(f'{ano[:3]}0s, {nota}')
+                    elif dado.startswith('</p') and notas == False:
+                        nota = 'filme sem nota'
+                        informações, ano, nome = pagina_filmes_individual(slug, lista_diretor, nota)
+                        contador1 += 1
+                    elif dado.startswith('data-film-slug='):
+                        lixo = dado.split('=')
+                        slug = lixo[1]
+                        slug = slug[1:-1]
 
 
-filmes_cm_nota = qnt_filmes - contador1
-if filmes_cm_nota == 0:
-    print(f'{nome_bonito} é paia por não dar nota')
-else:
+    filmes_cm_nota = qnt_filmes - contador1
+    if filmes_cm_nota == 0:
+        print(f'{nome_bonito} é paia por não dar nota')
+    else:
 
-    media_nota = contador2 /filmes_cm_nota
-    print(f'média de notas de {nome_bonito}: {media_nota}')
+        media_nota = contador2 /filmes_cm_nota
+        print(f'média de notas de {nome_bonito}: {media_nota}')
 
-print(filmes_cm_nota)
-informações.pop(0)
-informações_ord_filmes = informações
-informações_ord_media = informações
-tamanho_informações = len(informações)
-for i in range(tamanho_informações):
-    for j in range(0, tamanho_informações - i - 1):
-        media1 = float(informações_ord_media[j].split(' : ')[3])
-        media2 = float(informações_ord_media[j+1].split(' : ')[3])
-        if media1 < media2:
-            informações_ord_media[j], informações_ord_media[j+1] = informações_ord_media[j+1], informações_ord_media[j]
+    print(filmes_cm_nota)
+    informações.pop(0)
+    informações_ord_filmes = informações
+    informações_ord_media = informações
+    tamanho_informações = len(informações)
+    for i in range(tamanho_informações):
+        for j in range(0, tamanho_informações - i - 1):
+            media1 = float(informações_ord_media[j].split(' : ')[3])
+            media2 = float(informações_ord_media[j+1].split(' : ')[3])
+            if media1 < media2:
+                informações_ord_media[j], informações_ord_media[j+1] = informações_ord_media[j+1], informações_ord_media[j]
 
-print(informações_ord_media)
+    print(informações_ord_media)
 
-for i in range(tamanho_informações):
-    for j in range(0, tamanho_informações - i - 1):
-        filmes1 = float(informações_ord_filmes[j].split(' : ')[4])
-        filmes2 = float(informações_ord_filmes[j+1].split(' : ')[4])
-        if filmes1 < filmes2:
-            informações_ord_filmes[j], informações_ord_filmes[j+1] = informações_ord_filmes[j+1], informações_ord_filmes[j]
+    for i in range(tamanho_informações):
+        for j in range(0, tamanho_informações - i - 1):
+            filmes1 = float(informações_ord_filmes[j].split(' : ')[4])
+            filmes2 = float(informações_ord_filmes[j+1].split(' : ')[4])
+            if filmes1 < filmes2:
+                informações_ord_filmes[j], informações_ord_filmes[j+1] = informações_ord_filmes[j+1], informações_ord_filmes[j]
 
-print(informações_ord_filmes)
+    print(informações_ord_filmes)
 
-somas_decadas = []
+    somas_decadas = []
 
-for i in lista_anota:
-    decada, parcela = i.split(', ')
-    parcela = int(parcela)
-    liberado = False
-    for j in somas_decadas:
-        if j[0] == decada:
-            j[1] += parcela
-            j[2] +=1
-            liberado = True
-            break
-    if liberado == False:
-        somas_decadas.append([decada, parcela, 1])
+    for i in lista_anota:
+        decada, parcela = i.split(', ')
+        parcela = int(parcela)
+        liberado = False
+        for j in somas_decadas:
+            if j[0] == decada:
+                j[1] += parcela
+                j[2] +=1
+                liberado = True
+                break
+        if liberado == False:
+            somas_decadas.append([decada, parcela, 1])
 
-for decada, soma, contador in somas_decadas:
-    media = soma / contador
-    print(f"{decada}: media = {media:.2f}")
+    for decada, soma, contador in somas_decadas:
+        media = soma / contador
+        print(f"{decada}: media = {media:.2f}")
+
+
+def processar_input(event=None):
+    nome_usuario = barra.get()
+    main(nome_usuario)
+
+janela = Tk()
+janela.geometry('900x300')
+janela.title('Patron Moral')
+janela.config(bg='#1e1e1f')
+janela.iconphoto(False, PhotoImage(file='images.png'))
+titulo = Label(janela, text='Patreon', font=('Arial 45 bold'), fg='#fafbfc', bg='#1e1e1f')
+titulo.place(x=10, y=10)
+instrucao = Label(janela, text='Nome de Usuário :', font=('Arial 25'), fg='#fafbfc', bg='#1e1e1f')
+instrucao.place(relx=0.5, rely=0.5, anchor='center', x=-200, y=20)
+barra = Entry(janela, width=20, font=('Arial 15'))
+barra.place(relx=0.5, rely=0.5, anchor='center', x=80, y=20)
+barra.bind('<Return>', processar_input)
+credito = Label(janela, text='Made by BielNoAppCringe', font=('Arial 9'), fg='#fafbfc', bg='#1e1e1f')
+credito.place(relx=1.0, rely=1.0, anchor='se', x=-10, y=-10)
+janela.mainloop()
+
+
