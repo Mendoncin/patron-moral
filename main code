@@ -3,11 +3,23 @@ from bs4 import BeautifulSoup
 import math
 from tkinter import *
 
-def janela_resultados(ord_media, ord_filmes, filmes_cm_nota, media_nota, nome_bonito):
+def janela_resultados(ord_media, ord_filmes, qnt_filmes, media_nota, nome_bonito):
     nova_janela = Toplevel()
     nova_janela.title("Resultados")
-    nova_janela.geometry("600x400")
+    nova_janela.geometry("600x800")
     nova_janela.config(bg='#1e1e1f')
+    nova_janela.iconphoto(False, PhotoImage(file='images.png'))
+    nova_janela.columnconfigure(0, weight=1)    
+
+    brado = Label(nova_janela, text=nome_bonito, font=('Arial 40 bold'), fg='#fafbfc', bg='#1e1e1f')
+    brado.grid(row=0, column= 0, pady=20)
+
+    average = Label(nova_janela, text=f'Filmes assistidos:  {qnt_filmes}', font=('Arial 27 bold'), fg='#fafbfc', bg='#1e1e1f')
+    average.place(x=65, y=150)
+
+
+    texto_lista = Label(nova_janela, text='diretores', font=('Arial 20 bold'), fg='#fafbfc', bg='#1e1e1f')
+    texto_lista.place(x=100, y=300)
 
 
 def pagina_filmes_individual (slug, lista_diretor, nota):
@@ -180,7 +192,7 @@ def main(nome_usuario):
     else:
 
         media_nota = contador2 /filmes_cm_nota
-        janela_resultados(informações_ord_media, informações_ord_filmes, filmes_cm_nota, media_nota, nome_bonito)
+        janela_resultados(informações_ord_media, informações_ord_filmes, qnt_filmes, media_nota, nome_bonito)
         print(f'média de notas de {nome_bonito}: {media_nota}')
 
     print(filmes_cm_nota)
@@ -245,3 +257,5 @@ barra.bind('<Return>', processar_input)
 credito = Label(janela, text='Made by BielNoAppCringe', font=('Arial 9'), fg='#fafbfc', bg='#1e1e1f')
 credito.place(relx=1.0, rely=1.0, anchor='se', x=-10, y=-10)
 janela.mainloop()
+
+
