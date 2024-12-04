@@ -3,6 +3,13 @@ from bs4 import BeautifulSoup
 import math
 from tkinter import *
 
+def janela_resultados(ord_media, ord_filmes, filmes_cm_nota, media_nota, nome_bonito):
+    nova_janela = Toplevel()
+    nova_janela.title("Resultados")
+    nova_janela.geometry("600x400")
+    nova_janela.config(bg='#1e1e1f')
+
+
 def pagina_filmes_individual (slug, lista_diretor, nota):
     liberado = False
     contador3 = 0
@@ -115,6 +122,9 @@ def main(nome_usuario):
     lista_diretor = ['a : b : c : d : e']
     contador1 = 0
     contador2 = 0
+    informações = []
+    informações_ord_media = []
+    informações_ord_filmes = []
     url = f'https://letterboxd.com/{nome_usuario}/'
     cabecalhos = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, como Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -170,12 +180,13 @@ def main(nome_usuario):
     else:
 
         media_nota = contador2 /filmes_cm_nota
+        janela_resultados(informações_ord_media, informações_ord_filmes, filmes_cm_nota, media_nota, nome_bonito)
         print(f'média de notas de {nome_bonito}: {media_nota}')
 
     print(filmes_cm_nota)
     informações.pop(0)
-    informações_ord_filmes = informações
-    informações_ord_media = informações
+    informações_ord_filmes = informações.copy()
+    informações_ord_media = informações.copy()
     tamanho_informações = len(informações)
     for i in range(tamanho_informações):
         for j in range(0, tamanho_informações - i - 1):
@@ -234,5 +245,3 @@ barra.bind('<Return>', processar_input)
 credito = Label(janela, text='Made by BielNoAppCringe', font=('Arial 9'), fg='#fafbfc', bg='#1e1e1f')
 credito.place(relx=1.0, rely=1.0, anchor='se', x=-10, y=-10)
 janela.mainloop()
-
-
