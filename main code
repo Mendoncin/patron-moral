@@ -4,9 +4,10 @@ import math
 from tkinter import *
 
 def janela_resultados(ord_media, ord_filmes, qnt_filmes, media_nota, nome_bonito):
+    counting = 0
     nova_janela = Toplevel()
     nova_janela.title("Resultados")
-    nova_janela.geometry("600x800")
+    nova_janela.geometry("1000x800")
     nova_janela.config(bg='#1e1e1f')
     nova_janela.iconphoto(False, PhotoImage(file='images.png'))
     nova_janela.columnconfigure(0, weight=1)    
@@ -14,12 +15,38 @@ def janela_resultados(ord_media, ord_filmes, qnt_filmes, media_nota, nome_bonito
     brado = Label(nova_janela, text=nome_bonito, font=('Arial 40 bold'), fg='#fafbfc', bg='#1e1e1f')
     brado.grid(row=0, column= 0, pady=20)
 
-    average = Label(nova_janela, text=f'Filmes assistidos:  {qnt_filmes}', font=('Arial 27 bold'), fg='#fafbfc', bg='#1e1e1f')
+    average = Label(nova_janela, text=f'Filmes assistidos:  {qnt_filmes}', font=('Arial 27'), fg='#fafbfc', bg='#1e1e1f')
     average.place(x=65, y=150)
 
+    average1 = Label(nova_janela, text=f'Média das notas:  {media_nota:.2f}', font=('Arial 27'), fg='#fafbfc', bg='#1e1e1f')
+    average1.place(x=65, y=190)
 
-    texto_lista = Label(nova_janela, text='diretores', font=('Arial 20 bold'), fg='#fafbfc', bg='#1e1e1f')
+    texto_lista = Label(nova_janela, text='Diretores', font=('Arial 25 bold'), fg='#fafbfc', bg='#1e1e1f')
     texto_lista.place(x=100, y=300)
+
+    for autor in ord_media:
+        name = autor.split(' : ')
+        counting +=1
+        diretor = Label(nova_janela, text=name[0], font=('Arial 20'), fg='#fafbfc', bg='#1e1e1f')
+        ipsilon = 300 + (counting * 40)
+        diretor.place(x=100, y=ipsilon)
+        number = Label(nova_janela, text=name[4], font=('Arial 20'), fg='#fafbfc', bg='#1e1e1f')
+        number.place(x=650, y=ipsilon )
+        number1 = Label(nova_janela, text=name[3], font=('Arial 20'), fg='#fafbfc', bg='#1e1e1f')
+        number1.place(x=450, y=ipsilon )
+        if counting == 10:
+            break
+
+    counting = 0
+
+    if counting:
+        for autor in ord_filmes:
+            counting +=1
+            diretor = Label(nova_janela, text=autor[0], font=('Arial 20'), fg='#fafbfc', bg='#1e1e1f')
+            ipsilon = 300 + (counting * 40)
+            diretor.place(x=100, y=ipsilon)
+            if counting == 10:
+                break
 
 
 def pagina_filmes_individual (slug, lista_diretor, nota):
@@ -192,7 +219,6 @@ def main(nome_usuario):
     else:
 
         media_nota = contador2 /filmes_cm_nota
-        janela_resultados(informações_ord_media, informações_ord_filmes, qnt_filmes, media_nota, nome_bonito)
         print(f'média de notas de {nome_bonito}: {media_nota}')
 
     print(filmes_cm_nota)
@@ -236,6 +262,10 @@ def main(nome_usuario):
     for decada, soma, contador in somas_decadas:
         media = soma / contador
         print(f"{decada}: media = {media:.2f}")
+    janela_resultados(informações_ord_media, informações_ord_filmes, qnt_filmes, media_nota, nome_bonito)
+
+    
+    
 
 
 def processar_input(event=None):
