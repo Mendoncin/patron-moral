@@ -37,7 +37,7 @@ def janela_resultados(ord_media, ord_filmes, qnt_filmes, media_nota, nome_bonito
         diretor.place(x=100, y=ipsilon)
         number = Label(nova_janela, text=name[4], font=('Arial 20'), fg='#fafbfc', bg='#1e1e1f')
         number.place(x=650, y=ipsilon )
-        number1 = Label(nova_janela, text=name[3], font=('Arial 20'), fg='#fafbfc', bg='#1e1e1f')
+        number1 = Label(nova_janela, text=f"{float(name[3]):.2f}", font=('Arial 20'), fg='#fafbfc', bg='#1e1e1f')
         number1.place(x=450, y=ipsilon )
 
         labels_diretor.append(diretor)
@@ -61,7 +61,7 @@ def janela_resultados(ord_media, ord_filmes, qnt_filmes, media_nota, nome_bonito
         counting = 0
         for label in labels_number1:
             number = ord_filmes[counting].split(' : ')
-            label.config(text=number[3])
+            label.config(text=f"{float(number[3]):.2f}")
             counting+=1
 
     def retornar_labels():
@@ -78,7 +78,7 @@ def janela_resultados(ord_media, ord_filmes, qnt_filmes, media_nota, nome_bonito
         counting = 0
         for label in labels_number1:
             number = ord_media[counting].split(' : ')
-            label.config(text=number[3])
+            label.config(text=f"{float(number[3]):.2f}")
             counting+=1
 
     botao_alterar = Button(nova_janela, text="Filmes", command=alterar_labels, font=('Arial 15'))
