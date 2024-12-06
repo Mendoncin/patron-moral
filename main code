@@ -108,6 +108,8 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
         if diretor.endswith('\n…'):
             diretor = diretor.replace('\n…', '')
         while ',' in diretor:
+            liberado = False
+            contador3 = 0
             diretores = diretor.split(', ')
             for diretor1 in diretores:
                 contador3 = 0
@@ -164,6 +166,9 @@ def pagina_filmes_individual (slug, lista_diretor, nota):
                 lista_diretor[index] = f'{diretor} : {nota_diretor} : {qnt_filme_diretor1} : {media_diretor} : {qnt_filme_diretor}'
                 diretores.pop()
                 diretor = ', '.join(diretores)
+            
+        liberado = False
+        contador3 = 0
 
         for teste in lista_diretor:
                 lista_teste = teste.split(' : ')
@@ -272,6 +277,20 @@ def main(nome_usuario):
             media2 = float(informações_ord_media[j+1].split(' : ')[3])
             if media1 < media2:
                 informações_ord_media[j], informações_ord_media[j+1] = informações_ord_media[j+1], informações_ord_media[j]
+    
+    def pegar_indice(item):
+        valores = item.split(' : ')
+        index3 = float(valores[3])
+        index4 = float(valores[4])
+        return index3, index4
+
+    for i in range(len(informações_ord_media)):
+        for j in range(i + 1, len(informações_ord_media)):
+            index3_i, index4_i = pegar_indice(informações_ord_media[i])
+            index3_j, index4_j = pegar_indice(informações_ord_media[j])
+            if index3_i == index3_j and index4_i < index4_j:
+                informações_ord_media[i], informações_ord_media[j] = informações_ord_media[j], informações_ord_media[i]
+
 
     print(informações_ord_media)
 
@@ -281,6 +300,13 @@ def main(nome_usuario):
             filmes2 = float(informações_ord_filmes[j+1].split(' : ')[4])
             if filmes1 < filmes2:
                 informações_ord_filmes[j], informações_ord_filmes[j+1] = informações_ord_filmes[j+1], informações_ord_filmes[j]
+
+    for i in range(len(informações_ord_filmes)):
+        for j in range(i + 1, len(informações_ord_filmes)):
+            index3_i, index4_i = pegar_indice(informações_ord_filmes[i])
+            index3_j, index4_j = pegar_indice(informações_ord_filmes[j])
+            if index4_i == index4_j and index3_i < index3_j:
+                informações_ord_filmes[i], informações_ord_filmes[j] = informações_ord_filmes[j], informações_ord_filmes[i]
 
     print(informações_ord_filmes)
 
@@ -303,9 +329,6 @@ def main(nome_usuario):
         media = soma / contador
         print(f"{decada}: media = {media:.2f}")
     janela_resultados(informações_ord_media, informações_ord_filmes, qnt_filmes, media_nota, nome_bonito)
-
-    
-    
 
 
 def processar_input(event=None):
